@@ -1,0 +1,43 @@
+version: '3.6'
+
+services:
+  https-portal:
+    image: steveltn/https-portal:1.12
+    ports:
+      - '80:80'
+      - '443:443'
+    links:
+      - 'example_com'
+      - 'example_net'
+    restart: always
+    depends_on:
+      - example_com
+      - example_net
+    environment:
+      DOMAINS: 'example.com -> http://example_com, example.net -> http://example_net'
+      STAGE: local
+    volumes:
+      - https-portal-data:/var/lib/https-portal
+
+  example_com:
+    image: nginx:alpine
+    volumes:
+      - type: bind
+        source: /var/log/nginx
+        target: ${PWD}/var/log/nginx/example_com
+      - type: bind
+        source: example.com/.
+        target: /usr/share/nginx/html/
+  example_net:
+    image: nginx:alpine
+    volumes:
+      - type: bind
+        source: /var/log/nginx
+        target: ${PWD}/var/log/nginx/example_net
+      - type: bind
+        source: example.net/.
+        target: /usr/share/nginx/html/
+
+
+volumes:
+    https-portal-data: # Recommended, to avoid re-signing when upgrading HTTPS-PORTAL
