@@ -24,19 +24,25 @@ services:
     volumes:
       - type: bind
         source: /var/log/nginx
-        target: ${PWD}/var/log/nginx/example_com
+        target: ${PWD}/var/log/nginx/example.com
       - type: bind
         source: example.com/.
         target: /usr/share/nginx/html/
+      - type: bind
+        source: nginx/example.com/.
+        target:  /etc/nginx
   example_net:
     image: nginx:alpine
     volumes:
       - type: bind
         source: /var/log/nginx
-        target: ${PWD}/var/log/nginx/example_net
+        target: ${PWD}/var/log/nginx/example.net
       - type: bind
         source: example.net/.
         target: /usr/share/nginx/html/
+      - type: bind
+        source: nginx/example.net/.
+        target:  /etc/nginx
 
 
 volumes:
